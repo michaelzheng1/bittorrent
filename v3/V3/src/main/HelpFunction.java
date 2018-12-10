@@ -32,18 +32,25 @@ public class HelpFunction {
 	static UDPManager udpConnectManager = new UDPManager();
 	static UDPManager udpAnnouceManager = new UDPManager();
 	static TrackerInfo tracker;
-	
-	public static Queue<Piece> getPiecesFromTrackerInfo(TrackerInfo trackerinfo){
+    public static LinkedList<Piece> getPiecesFromTrackerInfo(TrackerInfo trackerinfo){
+
+    //public static Queue<Piece> getPiecesFromTrackerInfo(TrackerInfo trackerinfo){
 		tracker = trackerinfo;
 		byte[] pieces_sha1 = trackerinfo.pieces_sha1;
-		Queue<Piece> result = new LinkedList<>();
+		//Queue<Piece> result = new LinkedList<>();
+		LinkedList<Piece> result = new LinkedList<Piece>();
+
 		int bound = trackerinfo.pieces_num;
 		for(int i = 0; i < bound; i ++) {
 			byte[] sha1 = Arrays.copyOfRange(pieces_sha1, i * 20, (i + 1) * 20);
 			if(i < bound - 1) {
-				result.offer(new Piece(i, sha1, trackerinfo.piece_length));
+			    //result.offer(new Piece(i, sha1, trackerinfo.piece_length));
+			    result.add(new Piece(i, sha1, trackerinfo.piece_length));
+
 			}else {
-				result.offer(new Piece(i, sha1, (int)(trackerinfo.file_length - trackerinfo.piece_length * i)));
+			    //	result.offer(new Piece(i, sha1, (int)(trackerinfo.file_length - trackerinfo.piece_length * i)));
+			    result.add(new Piece(i, sha1, (int)(trackerinfo.file_length - trackerinfo.piece_length * i)));
+
 			}
 		}
 		return result;

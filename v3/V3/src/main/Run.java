@@ -13,12 +13,17 @@ public class Run {
 		System.out.println("Start a client: java -jar bittorrent-client.jar test.torrent client serverport");
 		System.out.println("Pay attention: serverport shounld be the same usable port!!");
 		System.out.println("You can look the report.pdf for detail effect after excute below command");
+		// Added a timer
+		Timer time  = new Timer();
+		time.start();
 		if(args.length > 0) {
 			if(args.length == 1) {
 				Torrent torrent = new Torrent(args[0]);
 				torrent.connectToTracker();
 				torrent.tcpEstablish();
 				torrent.download();
+				time.end();
+				time.getTotalTime();
 			}else {
 				String torrent_file = args[0];
 				String type = args[1];

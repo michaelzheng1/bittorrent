@@ -1,5 +1,6 @@
 package main;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,11 +8,20 @@ import java.util.Queue;
 
 public class Torrent {
 	TrackerInfo tracker;
-	Queue<Piece> pieces;
+        //Queue<Piece> pieces;d
+        LinkedList<Piece> pieces;
 	List<Peer> peers;
-	
-	public Torrent(String torrentFile) {
+    /***********************************Begin of editing**************************/
+
+
+    //Map<String, Integer> m = new HashMap<String, Integer>();
+    RarestFirst peer_inital_bitfield;
+    
+    /***********************************End of editing**************************/
+
+    public Torrent(String torrentFile) {
 		tracker = new TrackerInfo(torrentFile);
+		peer_inital_bitfield = new RarestFirst(tracker);
 	}
 	
 	void connectToTracker() {
@@ -19,6 +29,7 @@ public class Torrent {
 		pieces = HelpFunction.getPiecesFromTrackerInfo(tracker);
 		TransferManager.initial(pieces, this.tracker);
 		peers = Collections.synchronizedList(HelpFunction.getPeersFromTrackerInfo(tracker));
+		
 		System.out.println("================>>>>>End Connect To Tracker================>>>>>");
 	}
 	
@@ -68,6 +79,7 @@ public class Torrent {
 					peer.initialTCP();
 					peer.handShake();
 					while(!TransferManager.fileDonwloaded()) {
+					 
 						if(peer.out_buf.size() > 0) {
 							if(!peer.send()) {
 								break;
@@ -79,11 +91,12 @@ public class Torrent {
 							}
 						}else {
 							peer.recieveHandle();
+							
 						}
 					}
 					peer.closeTCP();
 				}
-			});
+			    });
 			t.start();
 			threadls.add(t);
 		}
@@ -97,10 +110,12 @@ public class Torrent {
 		if(TransferManager.fileDonwloaded()) {
 			TransferManager.writeToFile();
 			System.out.println("Success Recieve The File: " + this.tracker.file_name);
+			
 		}else {
 			System.out.println("Unable To Recieve The File: " + this.tracker.file_name);
+			
 		}
 	}
-	
+   
 }
 

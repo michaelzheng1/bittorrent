@@ -13,23 +13,44 @@ import bencoding.Type;
 
 public class TrackerInfo {
 	
-	Map<String, Object> tracker, info;
-	byte[] info_sha1, pieces_sha1;
-	long piece_length;
-	List<String> announce_list;
-	byte[] peer_id;
-	String file_name;
+    Map<String, Object> tracker, info;
+    byte[] info_sha1, pieces_sha1;//
+    long piece_length;
+    List<String> announce_list;
+    byte[] peer_id;//
+    String file_name;
 	
-	// Below Are Optional Variable
-	String comment, created_by, encoding;
-	Long creation_date;
+    // Below Are Optional Variable
+    String comment, created_by, encoding;
+    Long creation_date;
 	
-	// Canculte useful value
-	Long file_length = 0L;
-	int pieces_num;
-	List<FileInfo> fileinfoLs = new ArrayList<>();
-	boolean mutifile_mode = false;
-	
+    // Canculte useful value
+    Long file_length = 0L;
+    int pieces_num;
+    List<FileInfo> fileinfoLs = new ArrayList<>();
+    boolean mutifile_mode = false;
+    
+    /***********************************Begin of editing**************************/
+    List<Peer> peerList;
+    /* byte[] info_sha1;
+    byte[] peer_id;  
+    int port; // typicall 6881-6889
+    int uploaded_num;
+    int download_num;
+    int left;
+    //compact
+    //no_peer_id
+
+    public enum TrackerEvent {
+	Started,
+	Stopped,
+	Completed
+    }
+
+    // optional
+    //ip, numwant, key, trackerid
+    ***********************************End of editing**************************/
+    
 	public TrackerInfo(String filepath) {
 		try {
 			peer_id = Settings.PEER_DEFAULT_ID.getBytes("ISO-8859-1");

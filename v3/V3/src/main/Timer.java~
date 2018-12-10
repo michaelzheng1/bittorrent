@@ -1,0 +1,19 @@
+package main;
+
+public class Timer {
+
+    long startTime = 0;
+    long endTime = 0;
+    long totalTime = 0;
+    public Timer() {
+	this.startTime = System.nanoTime();
+
+    } 
+    public long getTotalTime() {
+	this.endTime = System.nanoTime();
+	this.totalTime = this.endTime - this.startTime;
+	System.out.println("The total execution time is " + totalTime);
+	return this.totalTime;
+	
+    }   
+}

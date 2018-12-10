@@ -35,7 +35,16 @@ public class Peer {
 	boolean server_mode = false;
 	byte[] file_data;
 	Piece cur_piece;
-	
+    /***************************** Begin edit*************/
+    //Map<Peer, bitfield> havePiece;
+    BitSet havePiece;
+    //RarestFirst
+    //Map<Peer, Integer> rareCount;
+    boolean firstPieceDownload = false;
+    //RareFirst rarity = 
+    /********************end edit**********************/
+        
+   
 	// Use for the server
 	public void setServerMode(String file) throws IOException {
 		this.server_mode = true;
@@ -176,6 +185,10 @@ public class Peer {
 				int num = ByteBuffer.wrap(payload).getInt();
 				if(Settings.LOGGING) System.out.println(this.log_head + "Have num " + num + " piece");
 				this.bitField.set(num);
+
+				// Added info
+				RarestFirst.update(num);
+				
 			}else if(id == 5) {
 				// Handle bitfield information
 				this.bitField = BitSet.valueOf(payload);
@@ -191,7 +204,8 @@ public class Peer {
 				}
 				cur_piece.addBlockData(block_offset, block_data);
 				if(cur_piece.isPieceFullDownloaded() && cur_piece.checkPieceHash()) {
-					if(Settings.LOGGING) System.out.println(this.log_head + "Success get piece " + TransferManager.downloaded_num);		
+					if(Settings.LOGGING) System.out.println(this.log_head + "Success get piece " + TransferManager.downloaded_num);
+					
 					TransferManager.nextPieces(this);
 				}else {
 					if(Settings.LOGGING) System.out.println(this.log_head + "Get piece data error. Retry.");
@@ -384,5 +398,6 @@ public class Peer {
 			this.in_buf.poll();
 		}
 	}
-	
+
+   
 }
