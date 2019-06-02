@@ -39,6 +39,7 @@ public class RarestFirst {
 	pieces = HelpFunction.getPiecesFromTrackerInfo(t);
 	piece_num = pieces.size();
 	piece_count = new HashMap<Integer, Integer>();
+	System.out.println("the piece_num is" +piece_num);
 	for (int i = 0; i < piece_num; i++) {
 	    piece_count.put(i, 0);
 	}
@@ -61,33 +62,40 @@ public class RarestFirst {
 	int minKey = -1;
 	List<Integer> potential_rare_piece =  new ArrayList<Integer>();
 	Map<Integer, Integer> clone = new HashMap<Integer,Integer>(piece_count);
-
 	// Finding 4 potential rare pieces
 	for (int i = 0; i < 4; i++) {
 	    for (Integer key: clone.keySet()) {
 		int value = clone.get(key);
-		if (value != 0) {
-		    if (value < min) {
+		if (value > 0) {
+		    if (value < min ) {
 			minKey = key;
 			min = value;
 		    }
-		}
+		}	
 	    }
-	    // If all the key values are zero then just choose a random index
-	    if (minKey == -1) {
-		int pick = ThreadLocalRandom.current().nextInt(0, piece_num);
+	    //System.out.println("+++++++++++++++ the minKey: " + minKey);
+	    // If all the key values are zero then pick a random index
+	    if (minKey < 0 && clone.size() > 0) {
+
+		//if (clone.size() > 0) {
+		int pick = ThreadLocalRandom.current().nextInt(clone.size());
+		
+		clone.remove(pick);
+		potential_rare_piece.add(pick);
+		//	}
+	    } else {
 		clone.remove(minKey);
 		potential_rare_piece.add(minKey);
 	    }
 	}
-	   
+	
 	// Randomly select between the 4 potential rare peices
 	int rand_num = ThreadLocalRandom.current().nextInt(0, 4); 
 	
-	//piece_count.remove(potential_rare_piece.get(rand_num));
+	//piece_count.remove(potential_rare_piece.get(rand_num));	
 	return potential_rare_piece.get(rand_num);
-
     }
+	
+	    
 }
 	
-  

@@ -25,7 +25,6 @@ public class TransferManager {
 		piece_num =pieces.size();
 		donwload_pieces = new byte[Long.valueOf(tracker.file_length).intValue()];
 		avail = new LinkedList<Integer>(); 
-		//Arrays.fill(avail, Boolean.TRUE);
 		for (int i = 0; i < piece_num; i++) {
 		    avail.add(i);
 		}
@@ -33,53 +32,48 @@ public class TransferManager {
 	
 	static void nextPieces(Peer peer) {
 		synchronized(TransferManager.class) {
-			if(downloaded_num < piece_num) {
- 
+		    if(downloaded_num < piece_num) {
 			    if(peer.cur_piece == null) {
-				if (avail.size() >= 4) {
-				    int index = RarestFirst.getRarestPiece();
-				    //peer.cur_piece = pieces.poll();
-				    //if (!pieces.isEmpty() && pieces.get(index) != null) {
-				    if (!avail.isEmpty() && avail.get(index) != null) {
-
-				    	peer.cur_piece = pieces.get(index);
-					avail.remove(index);
-					RarestFirst.removePiece(index);
-				    }
+				int index = RarestFirst.getRarestPiece();
+				if (index >= 0 && index <=  piece_num && avail.contains(index) &&
+				    avail.size() > 4) {
+				    peer.cur_piece = pieces.get(index);
+				    avail.remove(index);
+				    RarestFirst.removePiece(index);
 				} else {
-				    if (!avail.isEmpty()) {
+				    Random random = new Random();
+				    Integer randomIndex = avail.get(random.nextInt(avail.size()));
+				    peer.cur_piece = pieces.get(randomIndex);
+				    avail.remove(randomIndex);
+				    RarestFirst.removePiece(randomIndex);
+				}
+			
+			    } else {
+				int pidx = peer.cur_piece.idx;
+				for(int i = 0; i < peer.cur_piece.size; i ++) {
+				    donwload_pieces[pidx * Settings.PIECE_SIZE + i] = peer.cur_piece.piece_data[i];
+				}
+				//peer.cur_piece = pieces.poll();
+				int index = RarestFirst.getRarestPiece();
+				//System.out.println("looking for index " + index);
+
+				if (index >= 0 && index <=  piece_num && avail.contains(index) &&
+				    avail.size() > 4) {
+				    peer.cur_piece = pieces.get(index);
+				    avail.removeFirstOccurrence(index);
+				    RarestFirst.removePiece(index);
+				} else {
+				    if (avail.size() > 0) {
 					Random random = new Random();
 					Integer randomIndex = avail.get(random.nextInt(avail.size()));
-
-				    	peer.cur_piece = pieces.get(randomIndex);
-				    	RarestFirst.removePiece(randomIndex);
+					peer.cur_piece = pieces.get(randomIndex);
+					avail.remove(randomIndex);
+					RarestFirst.removePiece(randomIndex);
 				    }
 				}
-			    } else {
-				 
-				    int pidx = peer.cur_piece.idx;
-
-				    for(int i = 0; i < peer.cur_piece.size; i ++) {
-					donwload_pieces[pidx * Settings.PIECE_SIZE + i] = peer.cur_piece.piece_data[i];
-				    }
-					//peer.cur_piece = pieces.poll();
-					//if (pieces.size() >= 4) {
-					int index = RarestFirst.getRarestPiece();
-					System.out.println("I am looking for index: " + index);					
-					try {
-					    peer.cur_piece = pieces.get(index);
-					} catch ( IndexOutOfBoundsException e ) {
-					    if (!avail.isEmpty()) {
-						Random random = new Random();
-						Integer randomIndex = avail.get(random.nextInt(avail.size()));
-						peer.cur_piece = pieces.get(randomIndex);
-						RarestFirst.removePiece(randomIndex);
-					
-					    }
-					}
-					downloaded_num ++;
-				}
-			}
+				downloaded_num ++;
+			    }
+		    }
 		}
 	}
 	
@@ -123,3 +117,4 @@ public class TransferManager {
 		}
 	}
 }
+
