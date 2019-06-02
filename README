@@ -1,3 +1,9 @@
+#bittorrent
+
+An experimental BitTorrent client implemented in Java.
+
+The client is able to interoperate with official BitTorrent client.
+
 Go to v3 for the current verison.
 
 You can use this command to run jar file: java -jar bittorrent-client.jar test.torrent
