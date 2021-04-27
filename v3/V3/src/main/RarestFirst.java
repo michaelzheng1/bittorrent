@@ -73,16 +73,12 @@ public class RarestFirst {
 		    }
 		}	
 	    }
-	    //System.out.println("+++++++++++++++ the minKey: " + minKey);
 	    // If all the key values are zero then pick a random index
 	    if (minKey < 0 && clone.size() > 0) {
 
-		//if (clone.size() > 0) {
 		int pick = ThreadLocalRandom.current().nextInt(clone.size());
-		
 		clone.remove(pick);
 		potential_rare_piece.add(pick);
-		//	}
 	    } else {
 		clone.remove(minKey);
 		potential_rare_piece.add(minKey);

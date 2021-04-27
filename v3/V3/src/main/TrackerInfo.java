@@ -29,27 +29,8 @@ public class TrackerInfo {
     int pieces_num;
     List<FileInfo> fileinfoLs = new ArrayList<>();
     boolean mutifile_mode = false;
-    
-    /***********************************Begin of editing**************************/
     List<Peer> peerList;
-    /* byte[] info_sha1;
-    byte[] peer_id;  
-    int port; // typicall 6881-6889
-    int uploaded_num;
-    int download_num;
-    int left;
-    //compact
-    //no_peer_id
 
-    public enum TrackerEvent {
-	Started,
-	Stopped,
-	Completed
-    }
-
-    // optional
-    //ip, numwant, key, trackerid
-    ***********************************End of editing**************************/
     
 	public TrackerInfo(String filepath) {
 		try {

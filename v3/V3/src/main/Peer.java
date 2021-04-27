@@ -35,14 +35,8 @@ public class Peer {
 	boolean server_mode = false;
 	byte[] file_data;
 	Piece cur_piece;
-    /***************************** Begin edit*************/
-    //Map<Peer, bitfield> havePiece;
     BitSet havePiece;
-    //RarestFirst
-    //Map<Peer, Integer> rareCount;
     boolean firstPieceDownload = false;
-    //RareFirst rarity = 
-    /********************end edit**********************/
         
    
 	// Use for the server
@@ -148,11 +142,8 @@ public class Peer {
 			}
 			
 			byte id = in_buf.get(4);
-//			if(Settings.LOGGING) System.out.println(this.log_head + "len=" + len + " id=" + id);
 			byte[] payload = this.viewInBuf(5, len + 4);
 			if(payload.length < len - 1) {
-				// don't get full msg
-//				if(Settings.LOGGING) System.out.println(this.log_head + "Recieve message is not complete.");
 				return true;
 			}
 			this.removePartOfInBuf(len + 4);
@@ -164,15 +155,10 @@ public class Peer {
 				this.peer_choking = false;
 				if(Settings.LOGGING) System.out.println(this.log_head + "Peer unchoking");
 				if(this.server_mode) {
-					// also make an unchoke msg to client
 					
 				}else {
-					makeRequestBlockMsg();
-					// Not use have msg. the reason why we don't use it is that, we want to make suere we download full data from the peer.
-					// For some reason we don't know, the implementation of bittorrent doesn't return all the msg it have
-					// And our experiment environment can only get one peer which we deploy a server and install bittorrent on it.
+					makeRequestBlockMsg();		
 				}
-				// this time means can send to request msg
 			}else if(id == 2) {
 				this.peer_interested = true;
 				if(Settings.LOGGING) System.out.println(this.log_head + "Peer interested");

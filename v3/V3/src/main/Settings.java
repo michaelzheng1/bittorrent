@@ -4,7 +4,7 @@ public class Settings {
 	static int BLOCK_SIZE = 1 << 13;
 	static int PIECE_SIZE = 1 << 15;
 	static final String PEER_DEFAULT_ID = "70e2e3f37c31206bf06-"; // This is a 20-bytes random string
-//	static final String PEER_DEFAULT_ID = "-BT7104-37c31206bf06";
+	//	static final String PEER_DEFAULT_ID = "-BT7104-37c31206bf06";
 	static final long UDP_PROTOCOL_ID = 0x41727101980L;
 	static final int ACTION_CONNECT = 0; 
 	static final int ACTION_ANNOUNCE = 1; 

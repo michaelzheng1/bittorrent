@@ -11,15 +11,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UDPManager {
-	
+
 	List<Thread> threadls;
 	List<UDPResponse> udp_data_ls;
-	
+
 	public UDPManager() {
 		threadls = new ArrayList<>();
 		udp_data_ls = new ArrayList<>();
 	}
-	
+
 	void addUdpPlan(byte[] send_data, String host, int port, int check_action, int check_trans_id, int check_length) {
 		Thread t = new Thread(new Runnable() {
 			@Override
@@ -31,13 +31,14 @@ public class UDPManager {
 					InetAddress address = InetAddress.getByName(host);
 					System.out.println(log_head + "success query ip address: " + address.getHostAddress());
 					System.out.println(log_head + "starting connect use upd");
-					rd = handleUdpSend(send_data, address, port, check_action, check_trans_id, check_length, 1, log_head);
-					if(rd != null) {
-						synchronized(UDPManager.class) {
+					rd = handleUdpSend(send_data, address, port, check_action, check_trans_id, check_length, 1,
+							log_head);
+					if (rd != null) {
+						synchronized (UDPManager.class) {
 							udp_data_ls.add(new UDPResponse(rd, host, port));
 							System.out.println(log_head + "success fetch data");
 						}
-					}else {
+					} else {
 						System.out.println(log_head + "fail to fetch data");
 					}
 				} catch (UnknownHostException e) {
@@ -49,9 +50,9 @@ public class UDPManager {
 		this.threadls.add(t);
 		t.start();
 	}
-	
+
 	List<UDPResponse> excutePlan() {
-		for(Thread t : this.threadls) {
+		for (Thread t : this.threadls) {
 			try {
 				t.join();
 			} catch (InterruptedException e) {
@@ -61,12 +62,13 @@ public class UDPManager {
 		}
 		return this.udp_data_ls;
 	}
-	
-	List<UDPResponse> getUDPReturnData(){
+
+	List<UDPResponse> getUDPReturnData() {
 		return this.udp_data_ls;
 	}
-	
-	public byte[] handleUdpSend(byte[] send_data, InetAddress address, int port, int check_action, int check_trans_id, int check_length, int count, String log_head) {
+
+	public byte[] handleUdpSend(byte[] send_data, InetAddress address, int port, int check_action, int check_trans_id,
+			int check_length, int count, String log_head) {
 		DatagramPacket rp = null;
 		// send data
 		DatagramSocket socket = null;
@@ -76,7 +78,7 @@ public class UDPManager {
 			DatagramPacket packet = new DatagramPacket(send_data, send_data.length, address, port);
 			socket.send(packet);
 			System.out.println(log_head + "start send data");
-			
+
 			// receive data
 			byte[] rdata = new byte[1024];
 			rp = new DatagramPacket(rdata, 0, 1024);
@@ -84,40 +86,46 @@ public class UDPManager {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println(log_head + "request " + count + " times==>" + " ERROR:timeout:" + e.getMessage());
-			if(count < Settings.UDP_RESEND_LIMIT) {
-				return handleUdpSend(send_data, address, port, check_action, check_trans_id, check_length, ++ count, log_head);
-			}else {
+			if (count < Settings.UDP_RESEND_LIMIT) {
+				return handleUdpSend(send_data, address, port, check_action, check_trans_id, check_length, ++count,
+						log_head);
+			} else {
 				return null;
 			}
 		} finally {
-			if(socket != null) {
+			if (socket != null) {
 				socket.close();
 			}
 		}
-		if(rp != null && rp.getLength() >= check_length) {
+		if (rp != null && rp.getLength() >= check_length) {
 			byte[] rdata = rp.getData();
 			int action = ByteBuffer.wrap(Arrays.copyOf(rdata, 4)).getInt();
 			int trans_id = ByteBuffer.wrap(Arrays.copyOfRange(rdata, 4, 8)).getInt();
-			if(action != check_action || trans_id != check_trans_id) {
-				System.out.println(log_head + "request " + count + " times==>" + " ERROR:get response but invalid action status and trans_id==>" 
-			+ String.format("s_action:%d-s_trans_id:%d r_action:%d-r_trans_id:%d", check_action, check_trans_id, action, trans_id));
-				if(count < Settings.UDP_RESEND_LIMIT) {
-					return handleUdpSend(send_data, address, port, check_action, check_trans_id, check_length, ++ count, log_head);
-				}else {
+			if (action != check_action || trans_id != check_trans_id) {
+				System.out.println(log_head + "request " + count + " times==>"
+						+ " ERROR:get response but invalid action status and trans_id==>"
+						+ String.format("s_action:%d-s_trans_id:%d r_action:%d-r_trans_id:%d", check_action,
+								check_trans_id, action, trans_id));
+				if (count < Settings.UDP_RESEND_LIMIT) {
+					return handleUdpSend(send_data, address, port, check_action, check_trans_id, check_length, ++count,
+							log_head);
+				} else {
 					return null;
 				}
 			}
 			return Arrays.copyOfRange(rdata, 0, rp.getLength());
-		}else {
-			if(count < Settings.UDP_RESEND_LIMIT) {
-				System.out.println(log_head + "request " + count + " times==>" + " ERROR:response length is invalid or got not response");
-				return handleUdpSend(send_data, address, port, check_action, check_trans_id, check_length, ++ count, log_head);
-			}else {
+		} else {
+			if (count < Settings.UDP_RESEND_LIMIT) {
+				System.out.println(log_head + "request " + count + " times==>"
+						+ " ERROR:response length is invalid or got not response");
+				return handleUdpSend(send_data, address, port, check_action, check_trans_id, check_length, ++count,
+						log_head);
+			} else {
 				return null;
 			}
 		}
 	}
-	
+
 	void reset() {
 		this.threadls.clear();
 		this.udp_data_ls.clear();

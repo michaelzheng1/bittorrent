@@ -5,8 +5,6 @@ import java.io.IOException;
 public class Run {
 	
 	public static void main(String[] args) throws IOException {
-//		System.getProperties().put( "socksProxyHost", "127.0.0.1" );
-//		System.getProperties().put( "socksProxyPort", "1080" );
 		System.out.println("For downloading from bittorrent client: java  -jar bittorrent-client.jar test.torrent");
 		System.out.println("For downloading from our bittorrent instance, first need to start a sever, then start a client. Use below command");;
 		System.out.println("Start a server: java -jar bittorrent-client.jar test.torrent server serverport download_file_location");
