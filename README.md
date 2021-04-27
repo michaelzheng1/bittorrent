@@ -34,7 +34,7 @@ java -jar client.jar test_download_from_bittorrent.torrent
 Start a server using 2333 port:
 
 ```bash
-java -jar client.jar test_server_and_client.torrent server 2333 "BitTorrent.exe 
+java -jar client.jar test_server_and_client.torrent server 2333 "BitTorrent.exe" 
 ```
 
 Start a client and establish TCP connection with server:
