@@ -4,13 +4,16 @@ An experimental BitTorrent client implemented in Java.
 
 The client is able to interoperate with official BitTorrent client.
 
+This is a group project from university.
+
 Go to v3 for the current verison.
+
 
 ![Alt Text](https://github.com/michaelzheng1/website/blob/master/gif/bittorrent.gif?raw=true)
 
 ### Development Setup 
 
-This project is run in a Oracle VM VirtualBox. 
+Recommend to download Oracle VM VirtualBox. 
 
 ```bash
 Operating System: Ubuntu(64-bit)
